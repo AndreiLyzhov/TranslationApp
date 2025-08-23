@@ -8,7 +8,9 @@ import { useState } from "react"
 
 export default function App() {
 
-    const [response, setResponse] = useState("");
+    const [response, setResponse] = useState([]);
+    const [pending, setPending] = useState(false)
+    const [correctInput, setCorrectInput] = useState("")
 
   
     const fetchOpenAi = async (input, language) => {
@@ -21,7 +23,7 @@ export default function App() {
       const messages = [
         {
           role: "system", 
-          content: `You are experienced translator translating from ${language} to russian. Translate the given text.`,
+          content: `You are experienced translator translating from ${language} to english. Translate the given text to English.`,
         },
         
         {
@@ -31,24 +33,117 @@ export default function App() {
         
       ]
 
+      setPending(true);
+
       try {
         const res = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
           messages: messages,
-          temperature: 1.4,
+          temperature: 0.8,
           max_completion_tokens: 400,
         })
 
-        console.log(res.choices[0].message.content)
+        console.log(res.choices[0].message.content + " Translation")
 
-        setResponse(res.choices[0].message.content)
+        setResponse(prev => [...prev, {textContent: res.choices[0].message.content, className: "response"}])
 
       } catch(err) {
         console.log(err)
+      } finally {
+        setPending(false);
+      }
+    }
+
+
+
+
+
+
+    const checkMistakes = async (input) => {
+      
+      const openai = new OpenAI({
+        dangerouslyAllowBrowser: true,
+        apiKey: "YOUR_API_KEY",
+      })
+
+      const messages = [
+        {
+          role: "system", 
+          content: `Correct mistakes of the input if there are any. 
+          Output the correct output(just output the input as it is in case it is correct) 
+          and only and if there is a mistake in input add "###" to the end of your output`,
+        },
+        
+        {
+          role: "user",
+          content: input,
+        },
+        
+      ]
+
+      setPending(true);
+
+      try {
+        const res = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: messages,
+          temperature: 0.8,
+          max_completion_tokens: 400,
+        })
+
+        setCorrectInput(res.choices[0].message.content)
+
+        console.log(res.choices[0].message.content + " Checking Mistakes")
+        
+      } catch(error) {
+        console.log(error)
+      } finally {
+        setPending(false)
       }
     }
 
     
+
+    const checkLanguage = async (input, language) => {
+      const openai = new OpenAI({
+        apiKey: "YOUR_API_KEY",
+        dangerouslyAllowBrowser: true,
+      })
+
+      const messages = [
+        {
+          role: "system",
+          content: `If the input is in ${language} language - respond with word "Yes". 
+          Otherwise respond with empty output. 
+          Stick to this binary algorithm`,
+        },
+        {
+          role: "user",
+          content: input,
+        },
+      ]
+
+      setPending(true)
+
+      try {
+        const res = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages,
+          temperature: 0.7,
+          max_completion_tokens: 400,
+        })
+
+        console.log("Messages Array content: ", messages[0].content)
+
+        return res.choices[0].message.content;
+
+      } catch(error) {
+        console.log(error)
+      } finally {
+        setPending(false)
+      }
+    }
+
 
 
 
@@ -65,6 +160,10 @@ export default function App() {
         fetchOpenAi={fetchOpenAi}
         response={response}
         setResponse={setResponse}
+        pending={pending}
+        correctInput={correctInput}
+        checkMistakes={checkMistakes}
+        checkLanguage={checkLanguage}
         
       />
     </>
