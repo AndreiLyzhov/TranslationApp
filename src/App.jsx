@@ -4,6 +4,7 @@ import OpenAI from "openai"
 import Form from "./Form.jsx"
 import { useEffect } from "react"
 import { useState } from "react"
+import { useRef } from "react"
 
 
 export default function App() {
@@ -11,6 +12,7 @@ export default function App() {
     const [response, setResponse] = useState([]);
     const [pending, setPending] = useState(false)
     const [correctInput, setCorrectInput] = useState("")
+    const formElement = useRef(null);
 
   
     const fetchOpenAi = async (input, language) => {
@@ -43,7 +45,7 @@ export default function App() {
           max_completion_tokens: 400,
         })
 
-        console.log(res.choices[0].message.content + " Translation")
+        console.log(res.choices[0].message.content + " - Translation")
 
         setResponse(prev => [...prev, {textContent: res.choices[0].message.content, className: "response"}])
 
@@ -63,7 +65,7 @@ export default function App() {
       
       const openai = new OpenAI({
         dangerouslyAllowBrowser: true,
-        apiKey: "YOUR_API_KEY",
+        apiKey: "YOUR_API_KEY"
       })
 
       const messages = [
@@ -93,7 +95,7 @@ export default function App() {
 
         setCorrectInput(res.choices[0].message.content)
 
-        console.log(res.choices[0].message.content + " Checking Mistakes")
+        console.log(res.choices[0].message.content + " - Checking Mistakes")
         
       } catch(error) {
         console.log(error)
@@ -133,9 +135,38 @@ export default function App() {
           max_completion_tokens: 400,
         })
 
-        console.log("Messages Array content: ", messages[0].content)
+        console.log(res.choices[0].message.content + " - Checking Langugage")
 
         return res.choices[0].message.content;
+
+      } catch(error) {
+        console.log(error)
+      } finally {
+        setPending(false)
+      }
+    }
+
+
+
+
+    const generateBackground = async (input) => {
+      const openai = new OpenAI({
+        apiKey: "YOUR_API_KEY",
+        dangerouslyAllowBrowser: true,
+      })
+
+      setPending(true)
+
+      try{
+        const res = await openai.images.generate({
+          model: "dall-e-2",
+          prompt: `${input}`,
+          response_format: "url",
+        })
+
+        console.log(JSON.stringify(res) + "  - Generating Background");
+
+        formElement.current.style.backgroundImage = `url(${res.data[0].url})`;
 
       } catch(error) {
         console.log(error)
@@ -164,6 +195,8 @@ export default function App() {
         correctInput={correctInput}
         checkMistakes={checkMistakes}
         checkLanguage={checkLanguage}
+        generateBackground={generateBackground}
+        formElement={formElement}
         
       />
     </>

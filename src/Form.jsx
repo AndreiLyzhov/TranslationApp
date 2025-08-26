@@ -10,7 +10,7 @@ export default function Form(props) {
 
     
     const [language, setLanguage] = useState("");
-    const wrong = useRef(false)
+    const wrong = useRef(false);
 
 
     useEffect(() => {
@@ -29,9 +29,15 @@ export default function Form(props) {
                 .then((correctLanguage) => {
                     console.log("Check Language: ",correctLanguage, "Language: ", language, "Input: ", correctInputSlice)
                     if (correctLanguage) {
+
                         props.setResponse(prev => [...prev, {textContent: correctInputSlice, className: "message", wrong: wrong.current}])
+
+                        props.generateBackground(correctInputSlice)
+                        
                         props.fetchOpenAi(correctInput, language)
+
                     } else {
+
                         props.setResponse(prev => [...prev, {textContent: "Please choose correct language", className: "response"}])
                     }
                 })
@@ -42,9 +48,9 @@ export default function Form(props) {
     }, [props.correctInput])
 
 
-
     function collectData(formData){
         if (!props.pending) {
+            wrong.current = false;
             setLanguage(formData.get("language"))
             props.checkMistakes(formData.get("text-input"))
         }
@@ -68,7 +74,7 @@ export default function Form(props) {
     return (
         <>
         <section className="form-container">
-            <form action={collectData}>
+            <form action={collectData} ref={props.formElement}>
                 <TextMessage 
                     key={0}
                     textContent="Select the language you me to translate into, type your text and hit send!"
