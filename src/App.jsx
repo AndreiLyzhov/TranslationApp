@@ -5,6 +5,7 @@ import Form from "./Form.jsx"
 import { useEffect } from "react"
 import { useState } from "react"
 import { useRef } from "react"
+import parrotImg from "./assets/parrot.png"
 
 
 export default function App() {
@@ -181,7 +182,7 @@ export default function App() {
   return (
     <>
       <header>
-        <img className="pigeon-img" src="./src/assets/parrot.png"></img>
+        <img className="pigeon-img" src={parrotImg} alt="PollyGlot" />
         <div className="titles">
           <p className="green title">PollyGlot</p>
           <p className="title">Perfect Translation Every Time</p>

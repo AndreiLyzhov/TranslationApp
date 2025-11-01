@@ -4,6 +4,10 @@ import { useState } from "react"
 import { useRef } from "react"
 
 import TextMessage from "./TextMessage";
+import sendBtn from "./assets/send-btn.png";
+import frFlag from "./assets/fr-flag.png";
+import spFlag from "./assets/sp-flag.png";
+import jpnFlag from "./assets/jpn-flag.png";
 
 
 export default function Form(props) {
@@ -86,8 +90,8 @@ export default function Form(props) {
 
                 <div className="chat-container">
                     <input className="text-input" type="text" name="text-input"></input>
-                    <button className="send-button">
-                        <img src="./src/assets/send-btn.png"></img>
+                    <button type="submit" className="send-button">
+                        <img src={sendBtn} alt="Send" />
                     </button>
                 </div>
 
@@ -95,7 +99,7 @@ export default function Form(props) {
 
                     <input id="french" type="radio" name="language" value="French" defaultChecked/>
                     <label htmlFor="french"  className="label">
-                        <img src="src/assets/fr-flag.png" className="flag-img"></img>
+                        <img src={frFlag} alt="French" className="flag-img" />
                     </label>
                     
 
@@ -103,7 +107,7 @@ export default function Form(props) {
 
                     <input id="spanish" type="radio" name="language" value="Spanish" />
                     <label htmlFor="spanish"  className="label">
-                        <img src="src/assets/sp-flag.png" className="flag-img"></img>
+                        <img src={spFlag} alt="Spanish" className="flag-img" />
                     </label>
                     
 
@@ -111,7 +115,7 @@ export default function Form(props) {
 
                     <input id="japanese" type="radio" name="language" value="Japanese" />
                     <label htmlFor="japanese" className="label">
-                        <img src="src/assets/jpn-flag.png" className="flag-img"></img>
+                        <img src={jpnFlag} alt="Japanese" className="flag-img" />
                     </label> 
 
                 </div>
