@@ -6,7 +6,7 @@
 
 @font-face {
   font-family: "BigShouldersDisplay";
-  src: url('../assets/BigShouldersDisplay-ExtraBold.ttf') format(truetype);
+  src: url('/BigShouldersDisplay-ExtraBold.ttf') format(truetype);
   font-weight: 900;
   font-style: normal;
 
@@ -23,7 +23,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('../assets/worldmap.png');
+  background-image: url('/worldmap.png');
   background-position: -1000px 0px;
   width: 390px;
   height: 213px;
